@@ -3,7 +3,6 @@
 Requires ffmpeg and Pillow. All source clips retain their recorded speed.
 """
 import argparse
-import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -16,7 +15,6 @@ root = Path(__file__).resolve().parents[1]
 out = root / 'outputs'
 segments = out / 'segments'
 segments.mkdir(exist_ok=True)
-m = json.loads((out / 'manifest.json').read_text())
 ffmpeg = shutil.which('ffmpeg')
 if not ffmpeg:
     raise RuntimeError('ffmpeg is required')
@@ -53,26 +51,14 @@ def clip(name, title, subtitle):
         '-map','[v]',*encode_tail(),video)
     files.append(video)
 
-card('intro','ACTで学ぶ、ロボットの挨拶',[
+card('intro','ACTによるロボットの挨拶',[
     'CRANE+ V2 / ROS 2 / Gazebo / LeRobot',
-    '講義のお辞儀を、手振りとハンド開閉へ変更',
-    '教師デモ → 12本収集 → ACT学習 → 自律実行',
-    '録画は等速。Gazeboの状態をRVizで表示。'],8)
-clip('teacher-demo','教師デモ：スクリプトによる指令','腕を構える → 手首を3回振る・開閉 → 原点へ戻る')
-card('method','ここからは、学習済みACTが制御',[
-    f'学習：12エピソード / {m["frames"]}フレーム / 4,000 steps',
-    '入力：5関節の現在角度。画像入力は使わない。',
-    '出力：次の目標角度。20 Hzで繰り返し推論。',
-    '各試行の前だけ初期姿勢へ戻す。教師指令は停止。'],8)
-for i in range(1,4):
-    clip(f'act-{i:02d}',f'ACTによる実行：試行 {i} / 3','Gazebo物理シミュレーションの実状態 / 録画を等速再生')
-counts='・'.join(str(r['wrist_positive_negative_pairs']) for r in m['rollouts'])
-card('results','結果と残った課題',[
-    f'25秒 × 3試行で、手首の正負の振りは {counts} 組',
-    'AIによる手振りとハンド開閉を確認。',
-    '3回で止まること・原点への復帰は未達。',
-    f'未学習デモの行動予測RMSE：{m["heldout_rmse_rad"]:.4f} rad',
-    '記録状態での誤差は、タスク成功率とは異なる。'],10)
+    '教師デモとAI実行。RViz表示・等速録画。'],6)
+clip('teacher-demo','教師デモ','スクリプトで生成：手振り3回・ハンド開閉・原点復帰')
+clip('act-01','学習済みACTによる実行','現在の関節角度から推論。教師指令は停止。')
+card('results','結果',[
+    'AIによる手振り・ハンド開閉を確認。',
+    '3回で停止・原点復帰は未達。'],8)
 concat=segments/'concat.txt'
 concat.write_text(''.join(f"file '{path.name}'\n" for path in files))
 target=out/'PAI最終課題_sonodd2026.mp4'
