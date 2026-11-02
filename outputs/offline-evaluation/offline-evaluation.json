@@ -1,0 +1,25 @@
+{
+  "evaluation": "offline recorded-state action prediction",
+  "does_not_establish_closed_loop_success": true,
+  "episodes": [
+    {
+      "episode": 0,
+      "frames": 221,
+      "rmse_rad": 0.03952300548553467,
+      "joint_rmse_rad": [
+        0.03398458659648895,
+        0.03498903661966324,
+        0.067908875644207,
+        0.02005530335009098,
+        0.02042851597070694
+      ]
+    }
+  ],
+  "joint_order": [
+    "joint1",
+    "joint2",
+    "joint4",
+    "joint3",
+    "hand"
+  ]
+}

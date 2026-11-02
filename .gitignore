@@ -1,0 +1,9 @@
+dataset/
+checkpoints/
+logs/
+wandb/
+__pycache__/
+*.pyc
+.DS_Store
+outputs/*-raw.mp4
+outputs/segments/
